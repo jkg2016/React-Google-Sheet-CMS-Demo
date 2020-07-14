@@ -1,6 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
 import TableTop from 'tabletop';
+import Employee from './components/Employee';
+import NavBar from './components/NavBar';
+
+
+
+import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
     const[data, setData] = useState([]);
@@ -15,25 +21,30 @@ function App() {
       })
     }, [])
     console.log(data);
-
+   
+      const { isAuthenticated } = useAuth0();
+   
   return (
     <div className="App">
         <p>
           React + Google Sheet Demo
         </p>
+        <div className='nav-bar'>
+        <NavBar />
+        </div>
+        {isAuthenticated ?
       <div id="employee-detail">
       {
             data.map(obj => {
-              return (
-                <div key={obj.employee}>
-                  <p>{obj.employee}</p>
-                  <p>{obj.favDog}</p>
-                  <img alt={obj.favDog} src={obj.img} />
-                </div>
-              )
+              return <Employee employee={obj.employee} favDog={obj.favDog} img={obj.img} />
             })
           }
       </div>
+      :
+      <div>
+        <p>Please login</p>
+        </div>
+        }
   </div>
   );
 }
